@@ -1,0 +1,56 @@
+________________________________________________________________________
+create the results table
+________________________________________________________________________
+DROP TYPE PAL_KMEANS_ASSIGNED_T;
+CREATE TYPE PAL_KMEANS_ASSIGNED_T AS TABLE(
+"ID" INTEGER,
+"CLUSTER" INTEGER,
+"DISTANCE" DOUBLE,
+"SLIGHT_SILHOUETTE" DOUBLE
+);
+DROP TABLE PAL_KMEANS_ASSIGNED_TBL;
+CREATE COLUMN TABLE PAL_KMEANS_ASSIGNED_TBL LIKE PAL_KMEANS_ASSIGNED_T;
+_________________________________________________________________________
+END of create the results table
+________________________________________________________________________
+_________________________________________________________________________
+create CENTROIDS table
+________________________________________________________________________
+DROP TYPE PAL_KMEANS_CENTERS_T;
+CREATE TYPE  PAL_KMEANS_CENTERS_T AS TABLE(
+          "CLUSTER_ID" INTEGER,
+          "CUSTOMER" VARCHAR(60),
+	"LIFESPEND" DOUBLE,
+	"NEWSPEND" DOUBLE,
+	"INCOME" DOUBLE,
+	"LOYALTY" DOUBLE
+);
+_________________________________________________________________________
+END create CENTROIDS table
+________________________________________________________________________
+
+______________________________________________________________________
+Create table for PARAMETERS.  
+______________________________________________________________________
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL(
+	"PARAM_NAME" NVARCHAR(256), 
+	"INT_VALUE" INTEGER, 
+	"DOUBLE_VALUE" DOUBLE, 
+	"STRING_VALUE" NVARCHAR(1000)
+);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0.2, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('GROUP_NUMBER', 4, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('INIT_TYPE', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DISTANCE_LEVEL',2, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_ITERATION', 100, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('EXIT_THRESHOLD', NULL, 1.0E-6, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('CATEGORY_WEIGHTS', NULL, 0.5, NULL);
+______________________________________________________________________
+END of Create table for PARAMETERS. 
+________________________________________________________________
+- Execution of SAP KMEANS function
+
+CALL _SYS_AFL.PAL_KMEANS(CUSTOMERS1M, "#PAL_PARAMETER_TBL", PAL_KMEANS_ASSIGNED_TBL, PAL_KMEANS_CENTERS_TBL, ?, ?, ?) WITH OVERVIEW;
+
+
